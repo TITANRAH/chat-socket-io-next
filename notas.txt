@@ -1,0 +1,32 @@
+instalar clerk
+
+npm i @clerk/nextjs   
+
+crear cuenta en clerck
+
+https://dashboard.clerk.com/
+
+crear .env  
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_b2JsaWdpbmctdGV0cmEtMTUuY2xlcmsuYWNjb3VudHMuZGV2JA
+CLERK_SECRET_KEY=sk_test_ffGHeuLqgUd4b2v0tOh2IOXqPk1ie9bmqpsmVpXrl7
+
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+
+asi accedo cuando esta logeado
+
+ const loggedInUserData = await currentUser();
+  console.log(loggedInUserData);
+
+  let email = "";
+
+  if (loggedInUserData!.emailAddresses!) {
+    email = loggedInUserData?.emailAddresses[0].emailAddress || "";
+  }
+
+instalr mongoose
+
+npm i mongoose

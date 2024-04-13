@@ -19,13 +19,17 @@ import dayjs from "dayjs";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2, Upload } from "lucide-react";
+import useUserStore from "@/store/store-dos";
+import { Input } from "@/components/ui/input";
 
 interface Props {
   currentUserInfo?: User;
 }
 
 function CurrentUserInfo(props: Props) {
+  const state = useUserStore((state) => state);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { currentUserInfo } = props;
   const { signOut } = useClerk();
   const router = useRouter();
@@ -46,6 +50,10 @@ function CurrentUserInfo(props: Props) {
   };
 
   useEffect(() => {
+    state.setCurrentUser(currentUserInfo);
+
+    console.log("current", currentUserInfo);
+
     if (currentUserInfo?._id) {
       setShowHeader(true);
     } else {
@@ -90,15 +98,36 @@ function CurrentUserInfo(props: Props) {
             <div className="flex flex-col gap-5">
               <div className="flex flex-col justify-center items-center p-5 gap-2">
                 <Image
-                  src={currentUserInfo?.profilePicture!}
+                  src={
+                    selectedFile
+                      ? URL.createObjectURL(selectedFile)
+                      : currentUserInfo?.profilePicture!
+                  }
                   alt="image profile"
-                  width={90}
-                  height={90}
-                  className="rounded-full"
+                  width={100}
+                  height={100}
+                  className="rounded-full max-w-100 max-h-100"
                 />
+                {selectedFile && (
+                  <Trash2
+                    color="red"
+                    className="absolute top-32 right-40 cursor-pointer"
+                    onClick={() => {
+                      setSelectedFile(null);
+                      // Agrega aquí la lógica para manejar el evento de hacer clic en la 'X'
+                    }}
+                  ></Trash2>
+                )}
 
                 <span className="text-gray-500 cursor-pointer">
-                  Elige tu foto de Perfil
+                  {/* llamo a input creo una imagen la guardo en un estado la muestro arriba en el avatar */}
+                  <Input
+                    id="picture"
+                    type="file"
+                    onChange={(event) =>
+                      setSelectedFile(event.target.files![0])
+                    }
+                  />
                 </span>
               </div>
               <Separator />
@@ -121,6 +150,10 @@ function CurrentUserInfo(props: Props) {
                   )}
                 </Button>
               </DrawerClose>
+
+              <Button className="w-full" type="button" disabled={!selectedFile}>
+                Actualizar foto
+              </Button>
             </div>
             {/* <ScrollArea className="overflow-auto p-4 break-all">
             {Array.from({ length: 10000 }, (_, index) => index + 1)}

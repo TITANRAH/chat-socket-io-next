@@ -3,12 +3,16 @@ import { User } from "@/interfaces/userInterface";
 import CurrentUserInfo from "./CurrentUserInfo";
 import { GetCurrentUserFromMongoDB } from "@/server-actions/users";
 
+
+
 async function Header() {
+
   let userClerk: User;
 
   try {
     const response = await GetCurrentUserFromMongoDB();
     userClerk = response;
+    
   } catch (error) {
     console.log(error);
   }

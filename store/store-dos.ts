@@ -1,5 +1,5 @@
-import {create} from 'zustand';
-import {User} from '../interfaces/userInterface'
+import { create } from 'zustand';
+import { User } from '../interfaces';
 
 interface State {
   currentUserData: User; // Puedes reemplazar 'any' con el tipo adecuado para currentUserData

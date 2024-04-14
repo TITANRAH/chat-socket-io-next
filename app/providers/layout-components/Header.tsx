@@ -1,7 +1,7 @@
 "use server";
-import { User } from "@/interfaces/userInterface";
-import CurrentUserInfo from "./CurrentUserInfo";
+import { User } from "@/interfaces";
 import { GetCurrentUserFromMongoDB } from "@/server-actions/users";
+import CurrentUserInfo from "./CurrentUserInfo";
 
 
 

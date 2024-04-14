@@ -6,25 +6,22 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
+  DrawerTrigger
 } from "@/components/ui/drawer";
-import { Separator } from "@/components/ui/separator";
-import { User } from "@/interfaces/userInterface";
-import Image from "next/image";
-import dayjs from "dayjs";
-import { useClerk } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { CameraIcon, Loader2, Trash2, Upload } from "lucide-react";
-import useUserStore from "@/store/store-dos";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { User } from "@/interfaces";
 import { UploadToImageToFirebaseReturnUrl } from "@/lib/utils";
 import { UpdateUserProfile } from "@/server-actions/users";
-import { Label } from "@/components/ui/label";
+import useUserStore from "@/store/store-dos";
+import { useClerk } from "@clerk/nextjs";
+import dayjs from "dayjs";
+import { CameraIcon, Loader2, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface Props {
   currentUserInfo?: User;
@@ -134,7 +131,7 @@ function CurrentUserInfo(props: Props) {
                 
                 )}
 
-                {selectedFile && (
+                {selectedFile && !loading && (
                   <Trash2
                     color="red"
                     className="absolute top-32 right-40 cursor-pointer"

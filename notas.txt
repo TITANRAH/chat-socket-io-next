@@ -1,0 +1,131 @@
+creamos proyecto
+
+intalar clerk 
+
+confgurar cuenta clerk
+
+crear directorios sign in y sign up
+
+poner variables de entorno 
+
+capturar usuario como page 
+
+
+instalar redux 
+
+npm i redux @reduxjs/toolkit react-redux
+
+npm i firebase
+
+creo el proyecto activ storage para las fotos
+elijo produccion 
+
+documentacion para subir magenes a firebase
+https://firebase.google.com/docs/storage/web/upload-files?hl=es 
+
+en la carpeta utils esta la funcionalidad
+
+
+
+para subir fotos o files
+
+puedo usar input de shadcn 
+
+- lo escondo y lo muevo con top y right
+- pongo icono de camara
+- cuando doy a pulsar abre para elegir foto 
+- obtengo la foto asi en el input onChange={(event) =>
+                      setSelectedFile(event.target.files![0])
+                    }
+- en este caso sdesde el header que le paso el usuario logueado al componente que es un drawer lateral 
+- este componente se representa como un avatar y al apretarlo abre el drawer lateral <DrawerTrigger asChild>
+            <div className="flex items-center gap-2">
+              <span>{currentUserInfo!.userName}</span>
+              <Avatar className="cursor-pointer">
+                <AvatarImage src={currentUserInfo!.profilePicture} />
+              </Avatar>
+            </div>
+          </DrawerTrigger>
+
+- entonces como le paso el usuario logueado se trae la imagen que trae si es que tiene 
+
+al crear en clerk viene por defecto profilePicture con ese valor
+
+_id
+661371ae5889e526825dc0ef
+clerkUserId
+"user_2emrFpOyFjQ9LK8W9F2WL2mcs3n"
+name
+"Sergio Miranda"
+userName
+"titan"
+email
+"titanrah@gmail.com"
+profilePicture
+"https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yZW1vck9a…"
+createdAt
+2024-04-08T04:25:18.040+00:00
+updatedAt
+2024-04-08T04:25:18.040+00:00
+__v
+0
+
+
+en este mimso componente uso use client y llamo a useeffect y usestate y store de zustandd
+
+useeffcet le digo que si viene un id en el usuario muestre la info del usuario 
+
+ademas le digo que guarde en el estado zustand el usuario que se le paso desde el header
+
+el usestate lo uso par guardar la foto file o null setSelectedFile selectedFile 
+
+esto uso setSelectedFile para guardar desde el input tipo file 
+
+cuando guarde puedo mostrar lo que elegi asi
+
+    {loading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Avatar className="cursor-pointer w-32 h-32">
+                  <AvatarImage  src={
+                      selectedFile
+                        ? URL.createObjectURL(selectedFile)
+                        : currentUserInfo?.profilePicture!
+                    } />
+                </Avatar>
+                  
+                
+                )}
+
+    donde le paso URL.createObjectURL la file elegida selectedFile usando setSelectedFile 
+
+    ademas uso el mismo setSelectedFile para pasarle null si quiero eliminar la foto elegida
+
+    instalo firebase y creo e utils la funcion que me ayduara a guardar en firebase en storage 
+
+    esa funcion me retorna una url  que ademas guardo en el usuario en su campo de foto profilePicture 
+
+    esto mediante una fncion que creo en los actions por lo tanto en mi bd ahora queda asi 
+
+
+_id
+661379729afba7746473f489
+clerkUserId
+"user_2enscECmgyJAS3tpufmAiBgtugE"
+name
+"messi l"
+userName
+"messi"
+email
+""
+profilePicture
+"https://firebasestorage.googleapis.com/v0/b/useful-aquifer-325823.apps…"
+createdAt
+2024-04-08T04:58:26.376+00:00
+updatedAt
+2024-04-14T14:53:35.015+00:00
+__v
+0
+
+
+

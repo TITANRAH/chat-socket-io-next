@@ -19,9 +19,12 @@ import dayjs from "dayjs";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loader2, Trash2, Upload } from "lucide-react";
+import { CameraIcon, Loader2, Trash2, Upload } from "lucide-react";
 import useUserStore from "@/store/store-dos";
 import { Input } from "@/components/ui/input";
+import { UploadToImageToFirebaseReturnUrl } from "@/lib/utils";
+import { UpdateUserProfile } from "@/server-actions/users";
+import { Label } from "@/components/ui/label";
 
 interface Props {
   currentUserInfo?: User;
@@ -35,19 +38,6 @@ function CurrentUserInfo(props: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [showHeader, setShowHeader] = useState<boolean | null>(true);
-  const onLogout = async () => {
-    try {
-      setLoading(true);
-      await signOut();
-      alert("Logout sucess");
-      router.push("/sign-in");
-      setShowHeader(false);
-    } catch (error: any) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     state.setCurrentUser(currentUserInfo);
@@ -69,6 +59,39 @@ function CurrentUserInfo(props: Props) {
       </div>
     );
   };
+
+  const onLogout = async () => {
+    try {
+      setLoading(true);
+      await signOut();
+      alert("Logout sucess");
+      router.push("/sign-in");
+      setShowHeader(false);
+    } catch (error: any) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onProfilePictureUpdate = async () => {
+    try {
+      setLoading(true);
+      const url = await UploadToImageToFirebaseReturnUrl(selectedFile!);
+      const response = await UpdateUserProfile(currentUserInfo?._id!, {
+        profilePicture: url,
+      });
+      console.log("response update", response);
+      if (response.error) throw new Error(response.error);
+      state.setCurrentUser(currentUserInfo);
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+      setSelectedFile(null);
+    }
+  };
+
   return (
     <>
       {showHeader && (
@@ -97,37 +120,43 @@ function CurrentUserInfo(props: Props) {
 
             <div className="flex flex-col gap-5">
               <div className="flex flex-col justify-center items-center p-5 gap-2">
-                <Image
-                  src={
-                    selectedFile
-                      ? URL.createObjectURL(selectedFile)
-                      : currentUserInfo?.profilePicture!
-                  }
-                  alt="image profile"
-                  width={100}
-                  height={100}
-                  className="rounded-full max-w-100 max-h-100"
-                />
+                {loading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Avatar className="cursor-pointer w-32 h-32">
+                  <AvatarImage  src={
+                      selectedFile
+                        ? URL.createObjectURL(selectedFile)
+                        : currentUserInfo?.profilePicture!
+                    } />
+                </Avatar>
+                  
+                
+                )}
+
                 {selectedFile && (
                   <Trash2
                     color="red"
                     className="absolute top-32 right-40 cursor-pointer"
                     onClick={() => {
                       setSelectedFile(null);
-                      // Agrega aquí la lógica para manejar el evento de hacer clic en la 'X'
                     }}
                   ></Trash2>
                 )}
 
                 <span className="text-gray-500 cursor-pointer">
                   {/* llamo a input creo una imagen la guardo en un estado la muestro arriba en el avatar */}
+
                   <Input
-                    id="picture"
+                    aria-describedby="file-help-text"
+                    className="absolute opacity-0 cursor-pointer flex top-30 right-10"
+                    id="file"
                     type="file"
                     onChange={(event) =>
                       setSelectedFile(event.target.files![0])
                     }
                   />
+                  <CameraIcon size={50} />
                 </span>
               </div>
               <Separator />
@@ -143,7 +172,7 @@ function CurrentUserInfo(props: Props) {
 
               <DrawerClose>
                 <Button className="w-full" onClick={() => onLogout()}>
-                  {loading ? (
+                  {loading && !selectedFile ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     "Logout"
@@ -151,8 +180,17 @@ function CurrentUserInfo(props: Props) {
                 </Button>
               </DrawerClose>
 
-              <Button className="w-full" type="button" disabled={!selectedFile}>
-                Actualizar foto
+              <Button
+                className="w-full"
+                type="button"
+                disabled={!selectedFile}
+                onClick={onProfilePictureUpdate}
+              >
+                {loading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  "Actualizar foto perfil"
+                )}
               </Button>
             </div>
             {/* <ScrollArea className="overflow-auto p-4 break-all">

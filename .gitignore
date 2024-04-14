@@ -7,7 +7,7 @@
 .yarn/install-state.gz
 
 .env
-/notas.txt
+# /notas.txt
 
 # testing
 /coverage
